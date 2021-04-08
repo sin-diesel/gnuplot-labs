@@ -1,0 +1,17 @@
+\input{preambule_article}
+
+%%% [h] - place here
+\begin{table}[h!]
+        \begin{center}
+            %%% |c|c|c| - centering with vertical lines
+            \begin{tabular}{|c|c|c|}\hline
+            %%% make heading
+            \multicolumn{3}{|p{\linewidth}|}{\textbf{Значения резонансных частот и резонансных напряжений для разных значений емкости}} \\\hline
+             номер & f, кГц & U в\\\hline
+             %%% [late after line] - to draw hlines
+             %%% \num, \freq, \volt - names of columns in csv file
+             \csvreader[late after line = \\\hline]{data_2.csv}{num=\num, freq=\freq, volt=\volt}
+             {\num & \volt & \freq}
+             \end{tabular}
+        \end{center}
+\end{table}

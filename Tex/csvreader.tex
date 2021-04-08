@@ -1,0 +1,15 @@
+%%% csv reader example for future labs
+
+\input{preambule_article}
+
+\begin{table}[h!]
+    \begin{center}
+    %\caption{Значения резонансных частот и резонансных напряжений для разных значений емкостей}
+        \begin{tabular}{|c|c|p{5cm}|}\hline
+        \multicolumn{3}{|p{\linewidth}|}{\textbf{Значения резонансных частот и резонансных напряжений для разных значений емкости}} \\\hline
+         номер емкости & f резонансная, кГц & U (резонансное  напряжение), в\\\hline
+         \csvreader[late after line = \\\hline]{data_1.csv}{num=\num, freq=\freq, volt=\volt}
+         {\num & \freq & \volt}
+         \end{tabular}
+    \end{center}
+\end{table}

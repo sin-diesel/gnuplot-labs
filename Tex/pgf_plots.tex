@@ -1,0 +1,28 @@
+%%% pgfplots example for future labs
+
+\input{preambule_article}
+
+%%% [scale = 2] % scaling plot
+\begin{tikzpicture} 
+    %%% title = {Plot title} % plot title
+    %%% xlabel = {$xlabel$} % xlabel title
+    %%% ylabel = {$ylabel$} % ylabel title
+    %%% grid = major % draw major grid
+    \begin{axis}[
+        title = {Plot title},
+        xlabel = {$xlabel$},
+        ylabel = {$ylabel$},
+        grid = major,
+       ]
+      %%% importing from csv file,
+      %%% [only marks] % without connecting
+      %%% table[x = first, y = second, col sep = separator] %
+      %%% specify first as x data, second as y data
+      %%% col sep = comma - choose column separator
+      \addplot[only marks] table[x=freq, y=volt, col sep=comma] {data_1.csv};
+      %%% [raw gnuplot] - make line fitting
+      \addplot +[no markers, raw gnuplot] gnuplot {
+        plot 'data_3.dat' smooth sbezier; %%% importing from data file and making smooth curve
+    };
+    \end{axis}
+\end{tikzpicture}

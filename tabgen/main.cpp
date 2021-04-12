@@ -19,6 +19,9 @@ void parse_line(std::string& line, std::fstream& out_file) {
         ++cols;
     }
 
+    /* Print new line and hline at the end of each row */
+    out_file << "\\\\\\hline\n";
+
     delete[] cstr;
 }
 
@@ -91,8 +94,6 @@ int main(int argc, char** argv) {
             print_header(cols, out_file);
         }
         parse_line(line, out_file);
-        /* print new line when line has been parsed and delimiters added */
-        out_file << std::endl;
     }
     print_trailer(out_file);
 

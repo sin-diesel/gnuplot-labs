@@ -2,7 +2,12 @@
 #include <fstream>
 #include <vector>
 
-void parse_line(char* cstr, std::fstream& out_file) {
+void parse_line(std::string& line, std::fstream& out_file) {
+    int cols = 0;
+
+    char *cstr = new char [line.length()+1];
+    std::strcpy(cstr, line.c_str());
+
     char *p = std::strtok(cstr, " \t");
     while (p != 0) {
         std::string word(p);
@@ -11,7 +16,48 @@ void parse_line(char* cstr, std::fstream& out_file) {
         if (p != 0) {
             out_file << " & ";
         }
+        ++cols;
     }
+
+    delete[] cstr;
+}
+
+void print_header(int cols, std::fstream& out_file) {
+    out_file << "\\input{preambule_article}\n\n"
+                 "%%% [h] - place here\n" 
+                 "\\begin{table}[h!]\n"
+                 "\\begin{center}\n"
+                 "%%% |c|c|c| - centering with vertical lines\n";
+
+    out_file << "\\begin{tabular}{|";
+    for (int i = 0; i < cols; ++i) {
+        out_file << "c|";
+    }
+    out_file << "}\\hline\n";
+    out_file << "\\multicolumn{" << cols << "}"
+                "{|p{\\linewidth}|}{\\textbf{title}} \\\\\\hline\n";
+}
+
+void print_trailer(std::fstream& out_file) {
+    out_file << "\\end{tabular}\n"
+                "\\end{center}\n"
+                "\\end{table}\n";
+}
+
+int count_cols(std::string& line) {
+    int cols = 0;
+
+    char *cstr = new char [line.length()+1];
+    std::strcpy(cstr, line.c_str());
+
+    char *p = std::strtok(cstr, " \t");
+    while (p != 0) {
+        p = std::strtok(NULL, " \t");
+        ++cols;
+    }
+
+    delete[] cstr;
+    return cols;
 }
 
 int main(int argc, char** argv) {
@@ -36,14 +82,21 @@ int main(int argc, char** argv) {
 
     std::vector<std::string> lines;
     std::string line;
+    int cols = -1;
+
     while (std::getline(input_file, line)) {
-        char *cstr = new char [line.length()+1];
-        std::strcpy(cstr, line.c_str());
-        parse_line(cstr, out_file);
+        if (cols == -1) {
+            cols = count_cols(line);
+            std::cout << "Cols: " << cols << std::endl;
+            print_header(cols, out_file);
+        }
+        parse_line(line, out_file);
         /* print new line when line has been parsed and delimiters added */
         out_file << std::endl;
-        delete[] cstr;
     }
+    print_trailer(out_file);
+
+    std::cout << "Cols: " << cols << std::endl;
 
     out_file.close();
     input_file.close();

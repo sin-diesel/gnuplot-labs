@@ -60,12 +60,9 @@ double average_weighted(int n, std::vector<double>& data, std::vector<double>& e
 
 int main(int argc, char** argv) {
     if (argc > 1) {
-        std::cout << "Usage: ./fit < <data_file>" << std::endl;
+        std::cout << "Usage: chi < <data_file>" << std::endl;
         exit(EXIT_FAILURE);
     }
-
-    // std::string data_file(argv[1]);
-    // std::cout << "Calculating data from file " << data_file << "..." << std::endl;
 
     /* enter data */
     int N = 0;
@@ -161,8 +158,8 @@ int main(int argc, char** argv) {
     output << a << std::endl << b << std::endl;
     output.close();
 
-
+    // TODO:
     /* calculate errors */
-    
+
     return 0;
 }

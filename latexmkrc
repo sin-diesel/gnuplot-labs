@@ -1,0 +1,1 @@
+$ENV{'TEXINPUTS'}='~/Documents/Tex_preambules//:'.$ENV{'TEXINPUTS'};

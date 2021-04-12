@@ -2,5 +2,6 @@
 TEMPLATES_PATH="/Users/stassidelnikov/Documents/MIPT/Gen_phys_labs"
 
 echo "Copying tex sample files"
-cp -r "$TEMPLATES_PATH/Tex" $PWD
-cp "$TEMPLATES_PATH/latexmkrc" "$PWD/Tex"
+cp -r "$TEMPLATES_PATH/tex" $PWD
+cp "$TEMPLATES_PATH/latexmkrc" "$PWD/tex"
+mkdir $PWD/data

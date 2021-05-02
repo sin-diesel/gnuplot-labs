@@ -1,97 +1,40 @@
 /* This is a program for computing the a, b coefficients of of best-fit line
-    for given set of data using khi-squares method 
+    for given set of data using chi-squares method 
     
     Data in file is represented as follows:
     x   y   yerr
     2   3   0.5
     3   4   0.2
-    ...
-                    */
-
-#include <iostream>
-#include <fstream>
-#include <vector>
-
-#define PRECISION 1e-5
-
-double average(int n, std::vector<double>& data) {
-    double sigma_i = 0.0;
-    double w_i = 0.0;
-    double w = 0.0;
-    double dat_i = 0.0;
-    double res = 0.0;
-    /* average  x
-        dat_i = data[i], res += dat_i; */
-    for (int i = 0; i < n; ++i) {
-
-        dat_i = data[i];
-        res += dat_i;
-
-    }
-
-    return res;
-}
+    ...                 */
 
 
-double average_weighted(int n, std::vector<double>& data, std::vector<double>& err) {
-    double sigma_i = 0.0;
-    double w_i = 0.0;
-    double w = 0.0;
-    double dat_i = 0.0;
-    double res = 0.0;
-    /* average weighted x
-        w - sum of w_i, where w_i  = 1 / sigma_i^2, sigma_i = err[i]
-        dat_i = data[i], res = w_i * dat_i; */
-    for (int i = 0; i < n; ++i) {
-        sigma_i = err[i];
-        assert(sigma_i > PRECISION);
+  /* TODO:
+    1) Add coefficients errors calculation */
 
-        w_i = 1 / (sigma_i * sigma_i);
-        w += w_i;
-
-        dat_i = data[i];
-        res += w_i * dat_i;
-
-    }
-
-    res = res / w;
-    return res;
-}
+#include "chi.h"
 
 int main(int argc, char** argv) {
-    if (argc > 1) {
-        std::cout << "Usage: chi < <data_file>" << std::endl;
-        exit(EXIT_FAILURE);
+
+    bool args_input = check_args(argc, argv);
+    if (!args_input) {
+        std::cerr << "Error entering arguments." << std::endl;
+        return -1;
     }
 
-    /* enter data */
-    int N = 0;
-    std::cin >> N;
-    double elem = 0.0;
-
-    std::cout << "Number of points: " << N << std::endl;
+    std::string file_name(argv[1]);
+    std::fstream data_file;
+    data_file.open(file_name, std::ios::in);
+    if (!data_file) {
+        std::cerr << "Error opening file." << std::endl;
+        return -1;
+    }
 
     std::vector<double> xdat;
     std::vector<double> ydat;
     std::vector<double> errydat;
 
-    for (int i = 0; i < N; ++i) {
-        /* read in xdat, ydat, and errydat */
-        std::cin >> elem;
-        xdat.push_back(elem);
+    int N = enter_data(data_file, xdat, ydat, errydat);
 
-        std::cin >> elem;
-        ydat.push_back(elem);
-
-        std::cin >> elem;
-        errydat.push_back(elem);
-
-    }
-
-    std::cout << "Entered data: " << std::endl;
-    for (int i = 0; i < N; ++i) {
-        std::cout << "x " << xdat[i] << " y " << ydat[i] << " erry " << errydat[i] << std::endl;
-    }
 
     /* assuming sigma_i = errydat[i] */
     double weighted_x = average_weighted(N, xdat, errydat);
@@ -110,6 +53,7 @@ int main(int argc, char** argv) {
 
     std::vector<double> xydat;
     std::vector<double> errxydat;
+
     for (int i = 0; i < N; ++i) {
         xydat.push_back(xdat[i] * ydat[i]);
         /* there is no errx, hence, errxydat = errx + erry = 0 + erry = erry */
@@ -131,7 +75,6 @@ int main(int argc, char** argv) {
     double expected = 0;
     double real = 0;
     double chi_sqr = 0;
-    double chi = 0;
 
     for (int i = 0; i < N; ++i) {
         /* count delta y */
@@ -144,13 +87,11 @@ int main(int argc, char** argv) {
 
         double chi = delta_y / sigma;
         chi_sqr += chi * chi;
-
     } 
 
     std::cout << "Calculated chi_sqr: " << chi_sqr << std::endl;
 
     /* degrees of freedom */
-    int p = 2;
     std::cout << "chi_sqr / (n - p), where p = 2: " << chi_sqr / (N - 2) << std::endl;
 
     std::ofstream output;
@@ -158,8 +99,8 @@ int main(int argc, char** argv) {
     output << a << std::endl << b << std::endl;
     output.close();
 
-    // TODO:
-    /* calculate errors */
+    data_file.close();
 
     return 0;
 }
+

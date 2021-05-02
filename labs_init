@@ -1,5 +1,5 @@
 # Recursively copy all files from tex templates directory to current directory
-TEMPLATES_PATH="/Users/stassidelnikov/Documents/MIPT/Gen_phys_labs"
+TEMPLATES_PATH="/Users/stassidelnikov/Documents/mipt/ph_labs"
 
 echo "Copying tex sample files"
 cp -r "$TEMPLATES_PATH/tex" $PWD
